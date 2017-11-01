@@ -1,0 +1,49 @@
+<link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../paper-listbox/paper-listbox.html">
+<link rel="import" href="../paper-item/paper-item.html">
+
+<dom-module id="soma-check">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <h5>Lista de Aquisitores</h5>
+    <paper-listbox>
+      <paper-item id="UAM-01">UAM-01</paper-item>
+      <paper-item id="UAM-02">UAM-02</paper-item>
+    </paper-listbox>
+  </template>
+
+  <script>
+    /**
+     * `soma-check`
+     * Checa o AcquisitionManager e outros recursos do SOMA
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/index.html
+     */
+    let uam01 = document.getElementById("UAM-01");
+    console.log(uam01);
+    uam01.addEventListener('click', function() {
+        console.log("achei");
+      }
+    );
+
+    class SomaCheck extends Polymer.Element {
+      static get is() { return 'soma-check'; }
+      static get properties() {
+        return {
+          prop1: {
+            type: String,
+            value: 'soma-check'
+          }
+        };
+      }
+    }
+
+    window.customElements.define(SomaCheck.is, SomaCheck);
+  </script>
+</dom-module>
