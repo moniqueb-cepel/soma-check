@@ -11,8 +11,8 @@
     </style>
     <h5>Lista de Aquisitores</h5>
     <paper-listbox>
-      <paper-item id="UAM-01">UAM-01</paper-item>
-      <paper-item id="UAM-02">UAM-02</paper-item>
+      <paper-item id="UAM01">UAM-01</paper-item>
+      <paper-item id="UAM02">UAM-02</paper-item>
     </paper-listbox>
   </template>
 
@@ -25,12 +25,14 @@
      * @polymer
      * @demo demo/index.html
      */
-    let uam01 = document.getElementById("UAM-01");
-    console.log(uam01);
-    uam01.addEventListener('click', function() {
-        console.log("achei");
-      }
-    );
+    //let uam01 = document.getElementById("UAM-01");
+    console.log(this);
+    // let uam01 = this.$.UAM01;
+    // console.log(uam01);
+    // uam01.addEventListener('click', function() {
+    //     console.log("achei");
+    //   }
+    // );
 
     class SomaCheck extends Polymer.Element {
       static get is() { return 'soma-check'; }
@@ -42,6 +44,26 @@
           }
         };
       }
+
+      connectedCallback() {
+        super.connectedCallback();
+        console.log("connectedCallback called");
+        console.log(this);
+        // this.shadowRoot.addEventListener('slotchange', this._resetSelected.bind(this));
+        let uam01 = this.$.UAM01;
+        console.log(uam01);
+        uam01.addEventListener('click', function() {
+            console.log("achei UAM-01");
+          }
+        );
+        let uam02 = this.$.UAM02;
+        console.log(uam02);
+        uam02.addEventListener('click', function() {
+            console.log("achei UAM-02");
+          }
+        );
+      }
+
     }
 
     window.customElements.define(SomaCheck.is, SomaCheck);
