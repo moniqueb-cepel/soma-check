@@ -1,3 +1,4 @@
+
 <link rel="import" href="../polymer/polymer-element.html">
 <link rel="import" href="../paper-listbox/paper-listbox.html">
 <link rel="import" href="../paper-item/paper-item.html">
@@ -66,13 +67,28 @@
       }
 
       doAcquisManagerRequest(e) {
-        const aquisMngrURL = "http://__SERVER_NAME__:1443/aquis-manager/invoke?invokeDetail=%3C?xml%20version=%221.0%22%20encoding=%22ISO-8859-1%22?%3E%20%3CLVData%20xmlns=%22http://www.ni.com/labview%22%3E%3CCluster%3E%20%3CName%3EInvokeDetail%3C/Name%3E%20%3CNumElts%3E2%3C/NumElts%3E%20%3CString%3E%20%3CName%3Emethod%3C/Name%3E%20%3CVal%3EgetConfiguration%3C/Val%3E%20%3C/String%3E%20%3CArray%3E%20%3CName%3Eparameters%3C/Name%3E%20%3CDimsize%3E1%3C/Dimsize%3E%20%3CCluster%3E%20%3CName%3EParamData%3C/Name%3E%20%3CNumElts%3E2%3C/NumElts%3E%20%3CString%3E%20%3CName%3Ename%3C/Name%3E%20%3CVal%3EmessorId%3C/Val%3E%20%3C/String%3E%20%3CString%3E%20%3CName%3Evalue%3C/Name%3E%20%3CVal%3E__UAM_NAME__%3C/Val%3E%20%3C/String%3E%20%3C/Cluster%3E%20%3C/Array%3E%20%3C/Cluster%3E%3C/LVData%3E";
-        console.log("Fazendo request para a " + this.innerText);
+        let protocol = "http:";
+        let port = ":1443";
+        // Servidor do LabDEq é usado para testes
+        let serverName = "labdeq.cepel.br"; 
+        if (window.location.protocol == "https:") {
+            protocol = "https:";
+            port = "";
+        }
+        if (window.location.pathname.startsWith("/aquis-manager"))  {
+          // o componente está sendo invocado do contexto WEB 
+          serverName = window.location.hostname; 
+        }
+        console.log(window.location);
+        let aquisMngrURL = protocol + "//__SERVER_NAME__" + port +
+            "/aquis-manager/invoke?invokeDetail=%3C?xml%20version=%221.0%22%20encoding=%22ISO-8859-1%22?%3E%20%3CLVData%20xmlns=%22http://www.ni.com/labview%22%3E%3CCluster%3E%20%3CName%3EInvokeDetail%3C/Name%3E%20%3CNumElts%3E2%3C/NumElts%3E%20%3CString%3E%20%3CName%3Emethod%3C/Name%3E%20%3CVal%3EgetConfiguration%3C/Val%3E%20%3C/String%3E%20%3CArray%3E%20%3CName%3Eparameters%3C/Name%3E%20%3CDimsize%3E1%3C/Dimsize%3E%20%3CCluster%3E%20%3CName%3EParamData%3C/Name%3E%20%3CNumElts%3E2%3C/NumElts%3E%20%3CString%3E%20%3CName%3Ename%3C/Name%3E%20%3CVal%3EmessorId%3C/Val%3E%20%3C/String%3E%20%3CString%3E%20%3CName%3Evalue%3C/Name%3E%20%3CVal%3E__UAM_NAME__%3C/Val%3E%20%3C/String%3E%20%3C/Cluster%3E%20%3C/Array%3E%20%3C/Cluster%3E%3C/LVData%3E";
+        let uamName = this.innerText;
+        console.log("Fazendo request para a " + uamName);
         // console.log("event triggered on " + e.target.tagName + " element")
         // console.log(e);
         // console.log("this is '" + this.tagName + "' HTML Tag with innerText = '" + this.innerText + "' "); // this equivale a e.target
         // console.log(ironAjaxElement);
-        let aquisURL = aquisMngrURL.replace("__SERVER_NAME__", "labdeq.cepel.br").replace("__UAM_NAME__", "UAM-02");
+        let aquisURL = aquisMngrURL.replace("__SERVER_NAME__", serverName).replace("__UAM_NAME__", uamName);
         console.log(aquisURL);
         ironAjaxElement.url = aquisURL;
         let ironRequestElement = ironAjaxElement.generateRequest();
@@ -86,14 +102,13 @@
             let initStr = content.indexOf("&lt;?xml version");
             console.log("XML começa na posição " + initStr);
             resultArea.innerHTML = content.substr(initStr);
-            console.log(resultArea.innerHTML);
+            // console.log(resultArea.innerHTML);
           }, 
           function(rejected) {
             console.log("Request rejeitado pelo seguinte motivo: " + rejected.type);
           }
         );            
       }
-
     }
 
     window.customElements.define(SomaCheck.is, SomaCheck);
