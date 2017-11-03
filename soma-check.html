@@ -1,6 +1,7 @@
 <link rel="import" href="../polymer/polymer-element.html">
 <link rel="import" href="../paper-listbox/paper-listbox.html">
 <link rel="import" href="../paper-item/paper-item.html">
+<link rel="import" href="../iron-ajax/iron-ajax.html">
 
 <dom-module id="soma-check">
   <template>
@@ -9,14 +10,26 @@
         display: block;
       }
     </style>
+    <!-- iron-request id="my_xhr"></iron-request  -->
+    <iron-ajax id="requestAjax"
+               url="https://www.google.com.br"
+               params=''
+               handle-as="document">
+    </iron-ajax>
     <h5>Lista de Aquisitores</h5>
     <paper-listbox>
       <paper-item id="UAM01">UAM-01</paper-item>
       <paper-item id="UAM02">UAM-02</paper-item>
     </paper-listbox>
+    <paper-textarea id="resultArea" label="XML de configuração"></paper-textarea>
   </template>
 
   <script>
+
+    let ironAjaxElement = null;
+    let myResponse = null;
+    let resultArea = null;
+
     /**
      * `soma-check`
      * Checa o AcquisitionManager e outros recursos do SOMA
@@ -25,14 +38,6 @@
      * @polymer
      * @demo demo/index.html
      */
-    //let uam01 = document.getElementById("UAM-01");
-    console.log(this);
-    // let uam01 = this.$.UAM01;
-    // console.log(uam01);
-    // uam01.addEventListener('click', function() {
-    //     console.log("achei");
-    //   }
-    // );
 
     class SomaCheck extends Polymer.Element {
       static get is() { return 'soma-check'; }
@@ -49,19 +54,44 @@
         super.connectedCallback();
         console.log("connectedCallback called");
         console.log(this);
-        // this.shadowRoot.addEventListener('slotchange', this._resetSelected.bind(this));
+        ironAjaxElement = this.$.requestAjax;
+        resultArea = this.$.resultArea;
         let uam01 = this.$.UAM01;
         console.log(uam01);
-        uam01.addEventListener('click', function() {
-            console.log("achei UAM-01");
-          }
-        );
+        uam01.addEventListener('click', this.doAcquisManagerRequest);
+
         let uam02 = this.$.UAM02;
         console.log(uam02);
-        uam02.addEventListener('click', function() {
-            console.log("achei UAM-02");
+        uam02.addEventListener('click', this.doAcquisManagerRequest);
+      }
+
+      doAcquisManagerRequest(e) {
+        const aquisMngrURL = "http://__SERVER_NAME__:1443/aquis-manager/invoke?invokeDetail=%3C?xml%20version=%221.0%22%20encoding=%22ISO-8859-1%22?%3E%20%3CLVData%20xmlns=%22http://www.ni.com/labview%22%3E%3CCluster%3E%20%3CName%3EInvokeDetail%3C/Name%3E%20%3CNumElts%3E2%3C/NumElts%3E%20%3CString%3E%20%3CName%3Emethod%3C/Name%3E%20%3CVal%3EgetConfiguration%3C/Val%3E%20%3C/String%3E%20%3CArray%3E%20%3CName%3Eparameters%3C/Name%3E%20%3CDimsize%3E1%3C/Dimsize%3E%20%3CCluster%3E%20%3CName%3EParamData%3C/Name%3E%20%3CNumElts%3E2%3C/NumElts%3E%20%3CString%3E%20%3CName%3Ename%3C/Name%3E%20%3CVal%3EmessorId%3C/Val%3E%20%3C/String%3E%20%3CString%3E%20%3CName%3Evalue%3C/Name%3E%20%3CVal%3E__UAM_NAME__%3C/Val%3E%20%3C/String%3E%20%3C/Cluster%3E%20%3C/Array%3E%20%3C/Cluster%3E%3C/LVData%3E";
+        console.log("Fazendo request para a " + this.innerText);
+        // console.log("event triggered on " + e.target.tagName + " element")
+        // console.log(e);
+        // console.log("this is '" + this.tagName + "' HTML Tag with innerText = '" + this.innerText + "' "); // this equivale a e.target
+        // console.log(ironAjaxElement);
+        let aquisURL = aquisMngrURL.replace("__SERVER_NAME__", "labdeq.cepel.br").replace("__UAM_NAME__", "UAM-02");
+        console.log(aquisURL);
+        ironAjaxElement.url = aquisURL;
+        let ironRequestElement = ironAjaxElement.generateRequest();
+        ironRequestElement.completes.then(
+          function(req) {
+            // succesful request, argument is iron-request element
+            myResponse = req;
+            console.log(req.xhr);
+            // console.log(req.xhr.response.documentElement.lastElementChild.innerHTML);
+            let content = req.xhr.response.documentElement.lastElementChild.innerHTML;
+            let initStr = content.indexOf("&lt;?xml version");
+            console.log("XML começa na posição " + initStr);
+            resultArea.innerHTML = content.substr(initStr);
+            console.log(resultArea.innerHTML);
+          }, 
+          function(rejected) {
+            console.log("Request rejeitado pelo seguinte motivo: " + rejected.type);
           }
-        );
+        );            
       }
 
     }
