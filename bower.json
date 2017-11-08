@@ -7,7 +7,8 @@
     "iron-ajax": "PolymerElements/iron-ajax#^2.0.5",
     "iron-dropdown": "PolymerElements/iron-dropdown#^2.1.0",
     "paper-listbox": "PolymerElements/paper-listbox#^2.0.0",
-    "paper-item": "PolymerElements/paper-item#^2.0.0"
+    "paper-item": "PolymerElements/paper-item#^2.0.0",
+    "prismjs": "^1.5.1"
   },
   "devDependencies": {
     "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^2.0.0",
