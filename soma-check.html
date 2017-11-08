@@ -19,8 +19,8 @@
     </iron-ajax>
     <h5>Lista de Aquisitores</h5>
     <paper-listbox>
-      <paper-item id="UAM01">UAM-01</paper-item>
-      <paper-item id="UAM02">UAM-02</paper-item>
+      <paper-item id="UAM01">UA01</paper-item>
+      <!--<paper-item id="UAM02">UAM-02</paper-item>-->
     </paper-listbox>
     <paper-textarea id="resultArea" label="XML de configuração"></paper-textarea>
   </template>
@@ -63,7 +63,7 @@
 
         let uam02 = this.$.UAM02;
         console.log(uam02);
-        uam02.addEventListener('click', this.doAcquisManagerRequest);
+        //uam02.addEventListener('click', this.doAcquisManagerRequest);
       }
 
       doAcquisManagerRequest(e) {
